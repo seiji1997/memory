@@ -35,20 +35,20 @@ https://www.paltek.co.jp/techblog/tag/memory<br>
 
 
 Logitec データ復旧技術センターの記事<br>
-- フラッシュメモリとは
+- フラッシュメモリとは<br>
 https://www.logitec.co.jp/data_recovery/column/vol_002/<br>
 
 3次元フラッシュメモリについて<br>
--	キーのフラッシュメモリ
+-	キーのフラッシュメモリ<br>
 https://www.kioxia.com/ja-jp/rd/technology/bics-flash.html<br>
 
 
 個人ブログ記事：フラッシュメモリの読み書き消去や、信頼性について<br>
--	メイントピック
+-	メイントピック<br>
 https://progzakki.sanachan.com/technology/nand-flash-memory/<br>
 
 フラッシュメモリの基礎知識<br>
--	フラッシュメモリ: SSDの記憶装置に使われる
+-	フラッシュメモリ: SSDの記憶装置に使われる<br>
 https://www.pro.logitec.co.jp/houjin/usernavigation/hddssd/20220330/<br>
 
 SSD/NAND 基礎講座<br>
@@ -57,12 +57,12 @@ SSD/NAND 基礎講座<br>
 -	”ブロックマッピングとページマッピング”
 -	”NANDフラッシュ_SLC　MLC　TLC　QLC　の違い”
 -	”SSDにおけるウェアレベリングの概略”
--	”SSDにおけるガベージコレクションの概略”
+-	”SSDにおけるガベージコレクションの概略”<br>
 https://www.sanei-j.com/html/column.html<br>
 
 NANDフラッシュメモリの構造<br>
 -	「NAND MEMORY CRYSTAL」
--	「MEMORY CHIP」
+-	「MEMORY CHIP」<br>
 https://support.rusolut.com/portal/en/kb/articles/multi-plane-page-allocation-10-5-2020<br>
 
 SSD Doujinshi<br>
