@@ -1,75 +1,88 @@
-# memory
 
-## 半導体メモリについて
-SSDは半導体メモリ(NAND型フラッシュメモリ)を記憶部分に用いた記憶装置<br>
-- 情報の読み書き消去を行う。
-  - 重要: 読み書き消去の単位
-- チップ、プレーン、ブロック、ページ、セクター(セグメント)のような単位でメモリーチップは構成される。
-  - 重要: メモリチップの構成
-- 読み出しデータの異常を訂正する
-  - 重要: 誤り訂正符号(ECC)
+# SSDにおける重要な指標とECCの訂正能力
 
-## 【概念】
-NANDフラッシュメモリの読み書きについて起こる現象について知る<br>
+## OP率（Over-Provisioning Rate）
+- **定義**: OP率とは、SSD内部でユーザーに公開されていない領域の割合を指します。この領域は、データの書き換えやウェアレベリング（wear leveling）、ガベージコレクション（garbage collection）といったメンテナンス作業のために予約されています。
+- **目的**: OP領域があることで、SSDの性能を維持し、寿命を延ばすことができます。例えば、書き込み作業が集中するブロックを分散させることが可能になります。
 
-資料を見る観点<br>
--	読み書き消去は「どのように」「どの単位で」行われるか
--	データの読み書きにて起こるデータ誤りとは
--	データ誤りは何が原因か(program disturb, read disturb, data retention)
--	誤りの訂正方法は何か・訂正できるか
+## WAF（Write Amplification Factor）
+- **定義**: WAFは、実際にフラッシュメモリに書き込まれるデータ量が、ホストからSSDに送られたデータ量よりも増幅される割合を示す指標です。
+- **計算方法**: 
+  
+```math
+WAF = \frac{\text{フラッシュに書き込まれたデータ量}}{\text{ホストから書き込まれたデータ量}}
+```
 
-資料を見る観点(発展)<br>
--	SSD内のコントローラからNANDメモリに対する書き込み消去命令
--	その他書き込みの信頼性
--	効率のよい読み出し方法
--	SSDの信頼性指標とは
+- **影響**: 高いWAFはSSDの書き込み性能を低下させ、寿命を短くする要因となります。最適化されたコントローラー設計や適切なOP率により、WAFを低く抑えることが可能です。
 
-「SSDの寿命を延ばすために必要なWAF(書き込み効率)のおなはし(第1回)」<br>
-https://www.paltek.co.jp/techblog/tag/memory<br>
--	メモリ基本講座
--	半導体メモリとは
--	DRAMとは
--	NORとNANDとは
--	NAND応用製品(eMMC & SSD)
--	メモリ基本講座番外編
+## DWPD（Drive Writes Per Day）
+- **定義**: DWPDは、SSDの寿命期間中における1日にドライブ全体を何回書き換えることができるかを示す指標です。
+- **計算方法**:
+```math
+DWPD = \frac{\text{保証された書き込み容量}}{\text{ドライブ容量} \times \text{保証年数} \times 365}
+```
+
+- **目的**: DWPDはSSDの耐久性を評価するための指標であり、エンタープライズ向けSSDなどの選定基準の一つとして用いられます。
+
+## ECC（Error Correction Code）の訂正能力
+
+### ECCの基本
+- **目的**: ECCはデータ転送中や保存中に発生するビットエラーを検出し、可能な限り訂正するために使用されます。
+- **メカニズム**: ECCはデータに冗長なビットを追加し、その冗長性を利用してエラーを検出・訂正します。
+
+### 訂正能力
+
+ECCの訂正能力は、使用されるECCの種類やアルゴリズムに依存します。以下に一般的なECCアルゴリズムの例を示します。
+
+1. **パリティビット**:
+   - **機能**: 単一ビットエラーの検出。
+   - **限界**: エラーの訂正はできません。
+
+2. **Hammingコード**:
+   - **機能**: 単一ビットエラーの検出と訂正、二重ビットエラーの検出。
+   - **限界**: 三重以上のビットエラーの検出・訂正はできません。
+
+3. **BCHコード**:
+   - **機能**: 多ビットエラーの検出と訂正。
+   - **限界**: 設定された訂正ビット数に応じて、数ビットから数十ビットの訂正が可能。
+
+4. **Reed-Solomonコード**:
+   - **機能**: 連続するビットエラーの検出と訂正。
+   - **限界**: 設定された訂正ビット数に応じて、一定数の連続エラーの訂正が可能。
+
+5. **LDPC（Low-Density Parity-Check）コード**:
+   - **機能**: 高いエラー訂正能力と効率性を持ち、最新のSSDで一般的。
+   - **限界**: 設計に応じて、数百ビットに及ぶエラー訂正が可能。
+
+### SSDにおけるECC
+- **現状**: 現代のSSDでは、NANDフラッシュメモリの特性上、ビットエラー率が高くなるため、BCHやLDPCのような高度なECCが使用されます。
+- **訂正能力**: 具体的な訂正能力は、SSDのモデルや製造業者によって異なりますが、数十から数百ビットのエラーを訂正できることが一般的です。
+
+## まとめ
+ECCの訂正能力は、使用されるアルゴリズムとそのパラメータに依存します。SSDやメモリ製品の仕様書で具体的なECC訂正能力を確認することができます。最新のデバイスでは、高い訂正能力を持つECCが採用され、データの信頼性を確保しています。
 
 
-Logitec データ復旧技術センターの記事<br>
-- フラッシュメモリとは<br>
-https://www.logitec.co.jp/data_recovery/column/vol_002/<br>
+### User WAF（User Write Amplification Factor）の定義と計算式
 
-3次元フラッシュメモリについて<br>
--	キーのフラッシュメモリ<br>
-https://www.kioxia.com/ja-jp/rd/technology/bics-flash.html<br>
+User WAFとは
+- 定義: User WAFは、ユーザーの書き込み操作に対する書き込み増幅の度合いを示す指標です。SSDに対するユーザーの書き込み要求が実際にどれだけのフラッシュ書き込みを引き起こすかを測定します。
+- User WAFの計算式
+- User WAFは、次のように計算されます：
 
+```math
+User WAF = \frac{SSD内部で発生する総書き込み量}{ユーザーから要求された総書き込み量}​
+```
 
-個人ブログ記事：フラッシュメモリの読み書き消去や、信頼性について<br>
--	メイントピック<br>
-https://progzakki.sanachan.com/technology/nand-flash-memory/<br>
+SSD内部で発生する総書き込み量: 
+- これは、ガベージコレクションやウェアレベリングによって実際にフラッシュメモリに書き込まれたデータの総量を指します。
 
-フラッシュメモリの基礎知識<br>
--	フラッシュメモリ: SSDの記憶装置に使われる<br>
-https://www.pro.logitec.co.jp/houjin/usernavigation/hddssd/20220330/<br>
+ユーザーから要求された総書き込み量: 
+- これは、ホストまたはユーザーによってSSDに書き込み要求されたデータの総量を指します。
 
-SSD/NAND 基礎講座<br>
--	1~42まで
--	”NANDフラッシュメモリの構造”
--	”ブロックマッピングとページマッピング”
--	”NANDフラッシュ_SLC　MLC　TLC　QLC　の違い”
--	”SSDにおけるウェアレベリングの概略”
--	”SSDにおけるガベージコレクションの概略”<br>
-https://www.sanei-j.com/html/column.html<br>
+User WAFの影響
+- 高いUser WAF: 高いUser WAFは、SSDのパフォーマンスを低下させ、寿命を短くする可能性があります。これは、不要な書き込みが多く発生していることを意味します。
 
-NANDフラッシュメモリの構造<br>
--	「NAND MEMORY CRYSTAL」
--	「MEMORY CHIP」<br>
-https://support.rusolut.com/portal/en/kb/articles/multi-plane-page-allocation-10-5-2020<br>
+低いUser WAF: 
+- 低いUser WAFは、効率的な書き込みが行われていることを示し、SSDのパフォーマンスと寿命を向上させることができます。
 
-SSD Doujinshi<br>
-https://www.kioxia.com/ja-jp/business/ssd/solution/doujinshi.html<br>
-
-SSDの読み書きをコントロールする部分：SSDを長寿命化させる書き込み方法について<br>
-https://www.kioxia.com/content/dam/kioxia/ja-jp/business/ssd/solution/doujinshi/asset/SSD-Doujinshi-1.pdf<br>
-
-データの読み出し誤り訂正と誤り訂正符号(ECC)について<br>
-https://www.kioxia.com/content/dam/kioxia/ja-jp/business/ssd/solution/doujinshi/asset/SSD-Doujinshi-2.pdf<br>
+- User WAFは、特にエンタープライズ環境でのSSD選択や評価において重要な指標の一つとされています。効果的なSSD管理や設定により、User WAFを低く抑えることができ、SSDの効果的な運用が可能になります。
